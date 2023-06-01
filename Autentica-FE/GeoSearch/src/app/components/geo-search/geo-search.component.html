@@ -1,0 +1,17 @@
+<div class="container">
+    <div class="map-container" leaflet [leafletOptions]="options" (leafletMapReady)="onMapReady($event)"></div>
+    <div class="buttons">
+        <button class="btn" (click)="getExtremeCoordinates()">Get Extreme Coordinates</button>
+        <button class="btn" (click)="removeAllCoordinates()">Remove All Coordinates</button>
+        <div class="dropdown-content">
+            <input type="text" [(ngModel)]="searchQuery" placeholder="Search for a place..." (input)="searchPlaces()">
+            <div class="dropdown" *ngIf="searchResults.length > 0">
+                <ul>
+                    <li *ngFor="let result of searchResults">
+                        <a href="#" (click)="selectPlace(result)">{{ result.name }}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
