@@ -1,6 +1,7 @@
 ﻿using Autentica.Models;
 using Autentica.Services.Interfaces;
 using System.Globalization;
+using System.Numerics;
 using System.Text;
 
 namespace Autentica.Services
@@ -9,15 +10,19 @@ namespace Autentica.Services
     {
         private readonly List<Place> _apdzivotasVietas;
 
-        public GeoSearchService()
+        public GeoSearchService(string filePath)
         {
-            _apdzivotasVietas = LoadApgrozijumaVietasFromFile();
+            _apdzivotasVietas = LoadPlacesFromFile(filePath);
         }
 
-        private List<Place> LoadApgrozijumaVietasFromFile()
+        private List<Place> LoadPlacesFromFile(string filePath)
         {
-            List<Place> apdzivotasVietas = new List<Place>();
-            string filePath = Path.Combine("Database", "AW_VIETU_CENTROIDI.CSV");
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException("CSV file not found.", filePath);
+            }
+
+            List<Place> places = new List<Place>();
             string[] lines = File.ReadAllLines(filePath);
 
             foreach (string line in lines.Skip(1))
@@ -43,13 +48,13 @@ namespace Autentica.Services
                     DDE = fields[9]
                 };
 
-                apdzivotasVietas.Add(vieta);
+                places.Add(vieta);
             }
 
-            return apdzivotasVietas;
+            return places;
         }
 
-        public Place GetExtremeEast()
+        public async Task<Place> GetExtremeEastAsync()
         {
             decimal maxEast = decimal.MinValue;
             Place extremeEast = null;
@@ -69,7 +74,7 @@ namespace Autentica.Services
             return extremeEast;
         }
 
-        public Place GetExtremeNorth()
+        public async Task<Place> GetExtremeNorthAsync()
         {
             decimal maxNorth = decimal.MinValue;
             Place extremeNorth = null;
@@ -89,7 +94,7 @@ namespace Autentica.Services
             return extremeNorth;
         }
 
-        public Place GetExtremeSouth()
+        public async Task<Place> GetExtremeSouthAsync()
         {
             decimal maxSouth = decimal.MaxValue;
             Place extremeSouth = null;
@@ -109,7 +114,7 @@ namespace Autentica.Services
             return extremeSouth;
         }
 
-        public Place GetExtremeWest()
+        public async Task<Place> GetExtremeWestAsync()
         {
             decimal maxWest = decimal.MaxValue;
             Place extremeWest = null;
@@ -129,14 +134,14 @@ namespace Autentica.Services
             return extremeWest;
         }
 
-        public List<Place> SearchPlaceByName(string searchQuery)
+        public async Task<List<Place>> SearchPlaceByNameAsync(string searchQuery)
         {
-            string? normalizedSearchQuery = RemoveDiacritics(searchQuery);
+            string normalizedSearchQuery = RemoveDiacritics(searchQuery);
             List<Place> searchResults = _apdzivotasVietas
-            .Where(vieta => vieta.Name != null && RemoveDiacritics(vieta.Name)
-            .Contains(normalizedSearchQuery, StringComparison.OrdinalIgnoreCase))
-            .Take(5)
-            .ToList();
+                .Where(vieta => vieta.Name != null && RemoveDiacritics(vieta.Name)
+                    .Contains(normalizedSearchQuery, System.StringComparison.OrdinalIgnoreCase))
+                .Take(5)
+                .ToList();
 
             return searchResults;
         }
@@ -144,7 +149,7 @@ namespace Autentica.Services
         #region Helpers
         private string RemoveDiacritics(string text)
         {
-            var normalizedText = text.Normalize(NormalizationForm.FormKD);
+            var normalizedText = text.Normalize(System.Text.NormalizationForm.FormKD);
             var builder = new StringBuilder();
 
             foreach (var c in normalizedText)

@@ -1,9 +1,12 @@
 ﻿using Autentica.Models;
 using Autentica.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Autentica.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class GeoSearchController : Controller
     {
         private readonly IGeoSearchService _geoSearchService;
@@ -14,9 +17,9 @@ namespace Autentica.Controllers
         }
 
         [HttpGet("ExtremeNorth")]
-        public ActionResult<Place> GetExtremeNorth()
+        public async Task<ActionResult<Place>> GetExtremeNorth()
         {
-            Place extremeNorth = _geoSearchService.GetExtremeNorth();
+            Place extremeNorth = await _geoSearchService.GetExtremeNorthAsync();
 
             if (extremeNorth == null)
                 return NotFound();
@@ -25,9 +28,9 @@ namespace Autentica.Controllers
         }
 
         [HttpGet("ExtremeSouth")]
-        public ActionResult<Place> GetExtremeSouth()
+        public async Task<ActionResult<Place>> GetExtremeSouth()
         {
-            Place extremeSouth = _geoSearchService.GetExtremeSouth();
+            Place extremeSouth = await _geoSearchService.GetExtremeSouthAsync();
 
             if (extremeSouth == null)
                 return NotFound();
@@ -36,9 +39,9 @@ namespace Autentica.Controllers
         }
 
         [HttpGet("ExtremeWest")]
-        public ActionResult<Place> GetExtremeWest()
+        public async Task<ActionResult<Place>> GetExtremeWest()
         {
-            Place extremeWest = _geoSearchService.GetExtremeWest();
+            Place extremeWest = await _geoSearchService.GetExtremeWestAsync();
 
             if (extremeWest == null)
                 return NotFound();
@@ -47,9 +50,9 @@ namespace Autentica.Controllers
         }
 
         [HttpGet("ExtremeEast")]
-        public ActionResult<Place> GetExtremeEast()
+        public async Task<ActionResult<Place>> GetExtremeEast()
         {
-            Place extremeEast = _geoSearchService.GetExtremeEast();
+            Place extremeEast = await _geoSearchService.GetExtremeEastAsync();
 
             if (extremeEast == null)
                 return NotFound();
@@ -58,9 +61,12 @@ namespace Autentica.Controllers
         }
 
         [HttpGet("SearchPlace")]
-        public ActionResult<List<Place>> SearchPlaceByName(string searchQuery)
+        public async Task<ActionResult<List<Place>>> SearchPlaceByName([Required] string searchQuery)
         {
-            List<Place> searchResults = _geoSearchService.SearchPlaceByName(searchQuery);
+            if (string.IsNullOrEmpty(searchQuery))
+                return BadRequest("Search query cannot be empty.");
+
+            List<Place> searchResults = await _geoSearchService.SearchPlaceByNameAsync(searchQuery);
 
             return Ok(searchResults);
         }

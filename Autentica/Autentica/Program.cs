@@ -20,7 +20,11 @@ namespace Autentica
             });
 
             builder.Services.AddControllers();
-            builder.Services.AddScoped<IGeoSearchService, GeoSearchService>();
+            builder.Services.AddScoped<IGeoSearchService>(provider =>
+            {
+                var filePath = Path.Combine("Database", "AW_VIETU_CENTROIDI.CSV");
+                return new GeoSearchService(filePath);
+            });
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

@@ -4,10 +4,10 @@ namespace Autentica.Services.Interfaces
 {
     public interface IGeoSearchService
     {
-        Place GetExtremeNorth();
-        Place GetExtremeSouth();
-        Place GetExtremeWest();
-        Place GetExtremeEast();
-        List<Place> SearchPlaceByName(string searchQuery);
+        Task<Place> GetExtremeNorthAsync();
+        Task<Place> GetExtremeSouthAsync();
+        Task<Place> GetExtremeWestAsync();
+        Task<Place> GetExtremeEastAsync();
+        Task<List<Place>> SearchPlaceByNameAsync(string searchQuery);
     }
 }
