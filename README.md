@@ -30,15 +30,3 @@ Before proceeding, make sure you have the following software installed:
 6. Open your web browser and navigate to **`http://localhost:4200`** to access the application.
 
 **Note**: Ensure that the C# project is running in the background before launching the frontend project.
-
-### Additional Configuration
-
-If your project requires additional configuration steps, such as setting up a database connection or environment variables, please provide those instructions in this section.
-
-### Troubleshooting
-
-If you encounter any issues during the project launch, refer to the following troubleshooting steps:
-
-- Make sure all the prerequisites are installed correctly and are up to date.
-- Verify that the required ports (e.g., 4200 for the frontend) are not blocked by firewalls or other applications.
-- Double-check the project configuration files for any errors or missing settings.
